@@ -1,0 +1,22 @@
+Technologies:
+  Node
+  AngularJS
+  C#
+  Java
+  React
+  ASP.NET?
+  C
+  C++
+____________________
+Projects:
+
+  rasterizer
+    JavaScript
+
+  raytracer
+
+  game/platformer
+    C
+
+  Tweet reader
+    React
