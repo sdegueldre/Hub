@@ -4,6 +4,7 @@ var brickWidth = 90;
 var brickHeight = brickWidth/3;
 var brickSpacing = brickHeight*0.666;
 var Bricks = [xBricks];
+var ps = []; //particle system
 
 function setup() {
 	createCanvas(1280,720);
@@ -31,6 +32,12 @@ function draw() {
 
 	paddle.draw();
 	ball.draw();
+	for(let i = 0; i < ps.length; i++){
+		ps[i].draw();
+		ps[i].tick();
+		if(ps[i].life <= 0)
+			ps.splice(i, 1);
+	}
 }
 
 function Paddle(w,h) {
@@ -94,6 +101,12 @@ function Ball(size) {
 			for(let i = 0; i < xBricks; i++)
 				for(let j = 0; j < yBricks; j++)
 					if(Bricks[i][j] != null && this.collide(Bricks[i][j])){
+						let counter = random(3,15);
+						for(let i = 0; i < counter; i++){
+							let xv = 0.5*random(-this.speed, this.speed);
+							let yv = 0.5*random(-this.speed, this.speed);
+							ps.push(new Particle(this.x, this.y, xv, yv));
+						}
 						this.angle = -this.angle;
 						Bricks[i][j] = null;
 					}
@@ -125,5 +138,29 @@ function Brick(x,y,w,h) {
 		noStroke();
 		fill(255);
 		rect(this.x-this.width/2, this.y-this.height/2, this.width, this.height);
+	}
+}
+
+function Particle(x,y,xv,yv) {
+	this.x = x;
+	this.xv = xv;
+	this.y = y;
+	this.yv = yv;
+	this.gravity = 0.5;
+	this.r = 3;
+	this.life = 50;
+
+
+	this.tick = function() {
+		this.life--;
+		this.x += this.xv;
+		this.y += this.yv;
+		this.yv += this.gravity;
+	}
+
+	this.draw = function(){
+		ellipseMode(CENTER);
+		fill(255,255,255, this.life*2);
+		ellipse(this.x, this.y, this.r*2, this.r*2);
 	}
 }
