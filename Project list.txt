@@ -1,6 +1,3 @@
-To Do:
-  Use git for all projects
-
 Added:
   Color-pool
     make spawn rate configurable
