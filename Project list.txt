@@ -1,0 +1,30 @@
+To Do:
+  Use git for all projects
+
+Added:
+  Color-pool
+    make spawn rate configurable
+  Heart renderer
+    add line-width control
+  brick breaker
+    add score, lives, menu, bonuses, sounds
+  pong
+    same as brick breaker
+  teapot renderer
+    add vertical rotation, add zBuffer (probably needs custom triangle painting)
+
+To add:
+  Mastermind
+    Make independent from java server
+  Sorting visualizer
+    add controls to chose sorting algorithm, speed and bar width
+  Spirograph
+    add control for number of arms and length of them
+  ? Watt's Curve
+    add controls
+  ? Brownian motion
+    incomplete
+  Physics test: importance of numerical integration
+    add controls and explanation
+  Tetris
+    Pretty much everything to do
