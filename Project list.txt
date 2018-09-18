@@ -1,8 +1,8 @@
 Added:
   Color-pool
-    make spawn rate configurable
+    
   Heart renderer
-    add line-width control
+    
   brick breaker
     add score, lives, menu, bonuses, sounds
   pong
