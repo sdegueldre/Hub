@@ -3,6 +3,7 @@ var P2;
 var ball;
 var menuActive;
 var resumeButton;
+var playVsCPUbutton;
 
 function setup() {
 	createCanvas(1280,720);
@@ -14,6 +15,7 @@ function setup() {
 	ball = new Ball(width/2, height/2, 25, 255, 0, 0);
 	menuActive = false;
 	resumeButton = new Button(width/2, height/2, 300, 75, "Resume");
+	playVsCPUbutton = new Button(width/2, height/2 + 100, 300, 75, "CPU OFF");
 }
 
 function draw() {
@@ -29,7 +31,9 @@ function tickGame() {
 	P2.tick();
 	ball.tick();
 	if(ball.x < 0 || ball.x > width){
-		setup();
+		P1 = new Paddle(50, height/2, 25, 200, 90, 83); //z = 90, s = 83
+		P2 = new Paddle(width-50, height/2, 25, 200, UP_ARROW, DOWN_ARROW);
+		ball = new Ball(width/2, height/2, 25, 255, 0, 0);
 	}
 
 }
@@ -52,6 +56,7 @@ function drawMenu() {
 	strokeWeight(3);
 	text("Menu", width/2, 50);
 	resumeButton.draw();
+	playVsCPUbutton.draw();
 
 }
 
@@ -86,10 +91,17 @@ function Paddle(x,y,w,h, keyUp, keyDown){
 	}
 
 	this.tick = function() {
-		if(keyIsDown(keyDown))
-			this.y += this.speed
-		else if(keyIsDown(keyUp))
-			this.y -= this.speed
+		if(playVsCPUbutton.text == "CPU OFF" || this == P2){
+			if(keyIsDown(keyDown))
+				this.y += this.speed
+			else if(keyIsDown(keyUp))
+				this.y -= this.speed
+		} else {
+			if(this.y - ball.y > 50)
+				this.y -= this.speed;
+			else if(this.y - ball.y < -50)
+				this.y += this.speed;
+		}
 		this.y = constrain(this.y, this.height/2, height-this.height/2);
 	}
 }
@@ -230,6 +242,12 @@ function mousePressed(){
 	if(mouseButton == LEFT){
 		if(resumeButton.hover())
 			menuActive = false;
+		if(playVsCPUbutton.hover()){
+			if(playVsCPUbutton.text == "CPU OFF")
+				playVsCPUbutton.text = "CPU ON";
+			else
+				playVsCPUbutton.text = "CPU OFF";
+		}
 	}
 	return false;
 }
