@@ -25,5 +25,3 @@ To add:
     add controls and explanation
   Tetris
     Pretty much everything to do
-
-Test
