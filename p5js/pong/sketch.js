@@ -12,7 +12,7 @@ function setup() {
 	rect(0,0,1280,720);
 	P1 = new Paddle(50, height/2, 25, 200, 90, 83); //z = 90, s = 83
 	P2 = new Paddle(width-50, height/2, 25, 200, UP_ARROW, DOWN_ARROW);
-	ball = new Ball(width/2, height/2, 25, 255, 0, 0);
+	ball = new Ball(width/2, 12, 25, 255, 0, 0);
 	menuActive = false;
 	resumeButton = new Button(width/2, height/2, 300, 75, "Resume");
 	playVsCPUbutton = new Button(width/2, height/2 + 100, 300, 75, "CPU OFF");
@@ -149,21 +149,17 @@ function Ball(x,y,size, r, g, b) {
 			this.cycleColor();
 			while(this.history.length > 10*steps+10)
 				this.history.splice(0,1);
-			this.x += this.speed * cos(this.angle)/steps;
-			this.y += this.speed * sin(this.angle)/steps;
+			this.x += this.speed * cos(this.angle) / steps;
+			this.y += this.speed * sin(this.angle) / steps;
 			if(this.collide(P1)){
 				this.angle = (this.y - P1.y)/P1.height*HALF_PI;
 				this.speed++;
-				break;
 			} else if(this.collide(P2)){
 				this.angle = PI-(this.y - P2.y)/P2.height*HALF_PI;
 				this.speed++;
-				break;
 			}
 			if(this.y - this.size/2 <= 0 || this.y + this.size/2 >= height){
 				this.angle = -this.angle;
-				this.y <= 0 ? this.y + 1 : this.y - 1;
-				break;
 			}
 		}
 		if(this.speed == 0 && keyIsDown(32)) //32 = space bar
