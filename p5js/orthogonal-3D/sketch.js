@@ -10,13 +10,15 @@ var edges = [];
 var transformed = [];
 var rasterized = [];
 
+var lineWidth = 10;
+
 function setup(){
 	createCanvas(windowWidth, windowHeight);
 	background(0);
 	angleMode(DEGREES);
 	stroke(255);
 
-	strokeWeight(10);
+	strokeWeight(lineWidth);
 	noFill();
 	textSize(20);
 	textStyle()
@@ -142,7 +144,8 @@ var minDepth;
 function draw(){
 	background(0, 255);
 	blendMode(LIGHTEST);
-	//blendMode(ADD);	
+	//blendMode(ADD);
+	push();
 	translate(width/2, height/2);
 	transform();
 	minDepth = maxDepth = 0;
@@ -153,17 +156,19 @@ function draw(){
 		if(e.depth < minDepth)
 			minDepth = e.depth;
 	}
+	strokeWeight(lineWidth);
 	for(e of edges){
 		let brightness = map(e.depth, minDepth, maxDepth, 255, 20);
 		stroke(brightness, Math.pow(brightness,0.7), Math.pow(brightness,0.4));
 		line(rasterized[e.a].x, rasterized[e.a].y, rasterized[e.b].x, rasterized[e.b].y);
 	}
+	pop();
 	yaw += speed;
 
 	blendMode(BLEND);
 	fill(255);
 	noStroke();
-	text("FPS: " + fps, -width/2 + 10, -height/2 + 10);
+	text("FPS: " + fps + "\nLine width: " + lineWidth, 10, 30);
 
 }
 
@@ -194,17 +199,26 @@ function transform(){
 
 function keyPressed(){
 	switch(keyCode){
-		case(UP_ARROW):
+	case(UP_ARROW):
 		pitch += 5;
 		break;
-		case(DOWN_ARROW):
+	case(DOWN_ARROW):
 		pitch -= 5;
 		break;
-		case(LEFT_ARROW):
+	case(LEFT_ARROW):
 		speed -= 0.25;
 		break;
-		case(RIGHT_ARROW):
+	case(RIGHT_ARROW):
 		speed += 0.25;
+		break;
+	}
+	switch(key){
+	case 'P':
+		lineWidth++;
+		break;
+	case 'O':
+		lineWidth--;
+		lineWidth = lineWidth < 1 ? 1 : lineWidth;
 		break;
 	}
 }
