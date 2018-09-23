@@ -22,12 +22,12 @@ score.draw = function(){
 
 function setup() {
 	createCanvas(1280,720);
+	colorMode(HSB, 360, 100, 100, 255);
 	noStroke();
-	fill(0);
-	rect(0,0,1280,720);
+	background(0);
 	P1 = new Paddle(50, height/2, 25, 200, 90, 83); //z = 90, s = 83
 	P2 = new Paddle(width-50, height/2, 25, 200, UP_ARROW, DOWN_ARROW);
-	ball = new Ball(width/2, height/2, 25, 255, 0, 0);
+	ball = new Ball(width/2, height/2, 25, 0);
 	menuActive = false;
 	resumeButton = new Button(width/2, height/2, 300, 75, "Resume");
 	playVsCPUbutton = new Button(width/2, height/2 + 100, 300, 75, "CPU OFF");
@@ -37,7 +37,6 @@ function draw() {
 	if(!menuActive){
 		tickGame();
 	}
-
 	render();
 }
 
@@ -56,7 +55,7 @@ function tickGame() {
 		}
 		//P1 = new Paddle(50, height/2, 25, 200, 90, 83); //z = 90, s = 83
 		//P2 = new Paddle(width-50, height/2, 25, 200, UP_ARROW, DOWN_ARROW);
-		ball = new Ball(width/2, height/2, 25, 255, 0, 0);
+		ball = new Ball(width/2, height/2, 25, 0);
 	}
 
 }
@@ -71,6 +70,8 @@ function drawGame() {
 }
 
 function drawMenu() {
+	push();
+	colorMode(RGB);
 	fill(127,127,127,100); //RGBA, gray semi-transparent background
 	rectMode(CORNER);
 	noStroke();
@@ -83,7 +84,7 @@ function drawMenu() {
 	text("Menu", width/2, height/2 - 100);
 	resumeButton.draw();
 	playVsCPUbutton.draw();
-
+	pop();
 }
 
 function render() {
@@ -110,6 +111,7 @@ function Paddle(x,y,w,h, keyUp, keyDown){
 	this.keyUp = keyUp;
 	this.keyDown = keyDown;
 	this.color = color(255);
+
 	this.draw = function() {
 		noStroke();
 		fill(this.color);
@@ -133,20 +135,18 @@ function Paddle(x,y,w,h, keyUp, keyDown){
 	}
 }
 
-function Ball(x,y,size, r, g, b) {
+function Ball(x,y,size,col) {
 	this.x = x;
 	this.y = y;
 	this.size = size;
 	this.speed = 0;
 	this.angle = 0;
-	this.r = r;
-	this.g = g;
-	this.b = b;
+	this.col = col;
 	this.history = [];
 
 	this.draw = function() {
 		noStroke();
-		fill(this.r,this.g,this.b);
+		fill(color(this.col, 100, 100));
 		ellipseMode(CENTER);
 		ellipse(this.x,this.y,this.size,this.size);
 	}
@@ -154,7 +154,7 @@ function Ball(x,y,size, r, g, b) {
 	this.drawHistory = function() {
 		for(let i = 0; i < this.history.length; i++){
 			noStroke();
-			fill(this.history[i].r,this.history[i].g,this.history[i].b, i/this.history.length*100*0.7);
+			fill(color(this.history[i].col, 255, 100, i/this.history.length*100*0.7));
 			ellipseMode(CENTER);
 			ellipse(this.history[i].x,this.history[i].y,this.size*((i+1)/this.history.length/2+0.5),this.size*((i+1)/this.history.length/2+0.5));
 		}
@@ -163,7 +163,7 @@ function Ball(x,y,size, r, g, b) {
 	this.collide = function(paddle){
 		if(abs(this.x - paddle.x) <= (this.size + paddle.width)/2){
 			if(this.y + this.size/2 >= paddle.y - paddle.height/2 && this.y - this.size/2 <= paddle.y + paddle.height/2){
-				paddle.color = color(this.r, this.g, this.b);
+				paddle.color = color(this.col, 100, 100);
 				return true;
 			}
 		}
@@ -173,8 +173,10 @@ function Ball(x,y,size, r, g, b) {
 	this.tick = function() {
 		// Check collision 5 times per width of the ball
 		let steps = ceil(this.speed/this.size*5);
+		if(steps == 0)
+			this.cycleColor();
 		for(let i = 0; i < steps; i++){
-			this.history.push(new Ball(this.x, this.y, this.size, this.r, this.g, this.b));
+			this.history.push(new Ball(this.x, this.y, this.size, this.col));
 			this.cycleColor();
 			// Remove end of the tail
 			while(this.history.length > 10*steps+10)
@@ -200,20 +202,8 @@ function Ball(x,y,size, r, g, b) {
 	}
 
 	this.cycleColor = function() {
-		// This would be way cleaner in HSL color mode but
-		let step = 7;
-		if(this.r >= 255 && this.b <= 0 && this.g < 255)
-			this.g+=step;
-		if(this.g >= 255 && this.r > 0)
-			this.r-=step;
-		if(this.g >= 255 && this.r <= 0 && this.b < 255)
-			this.b+=step;
-		if(this.b >= 255 && this.g > 0)
-			this.g-=step;
-		if(this.b >= 255 && this.g <= 0 && this.r < 255)
-			this.r+=step;
-		if(this.r >= 255 && this.b > 0)
-			this.b-=step;
+		let step = 1.65;
+		this.col = (this.col+step) % 360;
 	}
 }
 
