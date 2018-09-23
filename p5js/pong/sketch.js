@@ -30,7 +30,7 @@ function setup() {
 	ball = new Ball(width/2, height/2, 25, 0);
 	menuActive = false;
 	resumeButton = new Button(width/2, height/2, 300, 75, "Resume");
-	playVsCPUbutton = new Button(width/2, height/2 + 100, 300, 75, "CPU OFF");
+	playVsCPUbutton = new Button(width/2, height/2 + 100, 300, 75, "CPU ON");
 }
 
 function draw() {
