@@ -5,6 +5,21 @@ var menuActive;
 var resumeButton;
 var playVsCPUbutton;
 
+var score = {p1: 0, p2:0, lastWinner: 1};
+
+score.draw = function(){
+	push();
+	fill(0);
+	stroke(255);
+	strokeWeight(4);
+	textSize(50);
+	textAlign(LEFT, BASELINE);
+	text(this.p1, 3.5, height-7);
+	textAlign(RIGHT, BASELINE);
+	text(this.p2, width-3.5, height-7);
+	pop();
+}
+
 function setup() {
 	createCanvas(1280,720);
 	noStroke();
@@ -31,6 +46,14 @@ function tickGame() {
 	P2.tick();
 	ball.tick();
 	if(ball.x < 0 || ball.x > width){
+		if(ball.x < 0){
+			score.p2++;
+			score.lastWinner = 2;
+		}
+		else {
+			score.p1++;
+			score.lastWinner = 1;
+		}
 		P1 = new Paddle(50, height/2, 25, 200, 90, 83); //z = 90, s = 83
 		P2 = new Paddle(width-50, height/2, 25, 200, UP_ARROW, DOWN_ARROW);
 		ball = new Ball(width/2, height/2, 25, 255, 0, 0);
@@ -40,21 +63,24 @@ function tickGame() {
 
 function drawGame() {
 	background(0);
-  	P1.draw();
-  	P2.draw();
-  	ball.drawHistory();
-  	ball.draw();
+	P1.draw();
+	P2.draw();
+	score.draw();
+	ball.drawHistory();
+	ball.draw();
 }
 
 function drawMenu() {
-	fill(127,127,127,100); //RGBA
-	rect(0,0,1280,720);
+	fill(127,127,127,100); //RGBA, gray semi-transparent background
+	rectMode(CORNER);
+	noStroke();
+	rect(0,0,width,height);
 	fill(255);
 	textSize(75);
 	textAlign(CENTER,CENTER);
 	stroke(255);
 	strokeWeight(3);
-	text("Menu", width/2, 50);
+	text("Menu", width/2, height/2 - 100);
 	resumeButton.draw();
 	playVsCPUbutton.draw();
 
@@ -62,16 +88,16 @@ function drawMenu() {
 
 function render() {
 	drawGame();
-	if(menuActive){
-		rectMode(CORNER);
-		drawMenu();
-	} else if(ball.speed == 0){
-		fill(255);
-		textSize(25);
+	if(ball.speed == 0){
+		fill(0);
+		textSize(50);
 		textAlign(CENTER,CENTER);
 		stroke(255);
-		strokeWeight(1);
+		strokeWeight(4);
 		text("Press space to start", width/2, 50);
+	}
+	if(menuActive){
+		drawMenu();
 	}
 }
 
@@ -143,10 +169,12 @@ function Ball(x,y,size, r, g, b) {
 	}
 
 	this.tick = function() {
+		// Check collision 5 times per width of the ball
 		let steps = ceil(this.speed/this.size*5);
 		for(let i = 0; i < steps; i++){
 			this.history.push(new Ball(this.x, this.y, this.size, this.r, this.g, this.b));
 			this.cycleColor();
+			// Remove end of the tail
 			while(this.history.length > 10*steps+10)
 				this.history.splice(0,1);
 			this.x += this.speed * cos(this.angle) / steps;
@@ -162,12 +190,15 @@ function Ball(x,y,size, r, g, b) {
 				this.angle = -this.angle;
 			}
 		}
-		if(this.speed == 0 && keyIsDown(32)) //32 = space bar
+		if(this.speed == 0 && keyIsDown(32)){ //32 = space bar
+			// Loser of previous round gets the ball first
 			this.speed = 10;
-		
+			this.angle = score.lastWinner == 1 ? 0 : PI;
+		}
 	}
 
 	this.cycleColor = function() {
+		// This would be way cleaner in HSL color mode but
 		let step = 7;
 		if(this.r >= 255 && this.b <= 0 && this.g < 255)
 			this.g+=step;
