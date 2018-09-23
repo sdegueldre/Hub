@@ -54,8 +54,8 @@ function tickGame() {
 			score.p1++;
 			score.lastWinner = 1;
 		}
-		P1 = new Paddle(50, height/2, 25, 200, 90, 83); //z = 90, s = 83
-		P2 = new Paddle(width-50, height/2, 25, 200, UP_ARROW, DOWN_ARROW);
+		//P1 = new Paddle(50, height/2, 25, 200, 90, 83); //z = 90, s = 83
+		//P2 = new Paddle(width-50, height/2, 25, 200, UP_ARROW, DOWN_ARROW);
 		ball = new Ball(width/2, height/2, 25, 255, 0, 0);
 	}
 
@@ -109,9 +109,10 @@ function Paddle(x,y,w,h, keyUp, keyDown){
 	this.speed = 15;
 	this.keyUp = keyUp;
 	this.keyDown = keyDown;
+	this.color = color(255);
 	this.draw = function() {
 		noStroke();
-		fill(255,255,255);
+		fill(this.color);
 		rectMode(CENTER)
 		rect(this.x,this.y,this.width,this.height);
 	}
@@ -162,6 +163,7 @@ function Ball(x,y,size, r, g, b) {
 	this.collide = function(paddle){
 		if(abs(this.x - paddle.x) <= (this.size + paddle.width)/2){
 			if(this.y + this.size/2 >= paddle.y - paddle.height/2 && this.y - this.size/2 <= paddle.y + paddle.height/2){
+				paddle.color = color(this.r, this.g, this.b);
 				return true;
 			}
 		}
