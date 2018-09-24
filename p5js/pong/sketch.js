@@ -196,7 +196,7 @@ function Ball(x,y,size,col) {
 		}
 		if(this.speed == 0 && keyIsDown(32)){ //32 = space bar
 			// Loser of previous round gets the ball first
-			this.speed = 10;
+			this.speed = 20;
 			this.angle = score.lastWinner == 1 ? 0 : PI;
 		}
 	}
