@@ -52,3 +52,7 @@ function mult(m, v){
 function drawTriangle(face, image){
 	
 }
+
+function avgZ(f){
+	return (vertices[f.v1].z + vertices[f.v2].z + vertices[f.v3].z)/3;
+}

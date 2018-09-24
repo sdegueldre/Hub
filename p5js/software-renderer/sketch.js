@@ -7,7 +7,7 @@ var renderNormals = false;
 var normalsLength = 0.2;
 var matrix;
 var rotY = 0;
-var turnRate = 0;
+var turnRate = 0.5;
 var lightTurnRate = 0;
 var ldir;
 var doShading = true;
@@ -30,13 +30,15 @@ function setup(){
 }
 
 function draw(){
-	rotateScene(0,turnRate,0);
-	rotateLight();
-	background(0);
-	rotate(180)
-	translate(-width/2, -height+50);
-	scale(200);
-	render();
+  if(turnRate != 0){
+  	rotateScene(0,turnRate,0);
+  	rotateLight();
+  	background(0);
+  	rotate(180)
+  	translate(-width/2, -height+50);
+  	scale(200);
+  	render();
+  }
 }
 
 function windowResized(){
@@ -60,7 +62,9 @@ function parse_file(){
 }
 
 function render(){
+  faces.stableSort((a,b) => (avgZ(a) > avgZ(b)));
 	for(f of faces){
+    // z < 0 => faces away from camera (backface culling)
 		if(f.normal.z > 0){
 			// gamma correction
 			let col = pow(map(dot(f.normal, ldir),-1,1,0,1), 2.2)*255;
@@ -112,4 +116,18 @@ function keyPressed(){
 		break;
 	}
 
+}
+
+Array.prototype.stableSort = function(cmp) {
+  let stabilizedThis = this.map((el, index) => [el, index]);
+  let stableCmp = (a, b) => {
+    let order = cmp(a[0], b[0]);
+    if (order != 0) return order;
+    return a[1] - b[1];
+  }
+  stabilizedThis.sort(stableCmp);
+  for (let i=0; i<this.length; i++) {
+    this[i] = stabilizedThis[i][0];
+  }
+  return this;
 }
