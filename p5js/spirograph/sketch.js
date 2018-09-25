@@ -5,6 +5,7 @@ var angle = 0.5;
 var len = 500;
 var nextCol;
 var paused = false;
+var seed;
 
 function setup() {
 	arms = [];
@@ -15,6 +16,15 @@ function setup() {
 	noFill();
 	stroke(0);
 	strokeWeight(1);
+	randomSeed();
+	seed = random(4294967296);
+	randomSeed(seed);
+	console.log("Seed: " + seed);
+	textSize(25);
+	noStroke();
+	fill(0);
+	text("Seed: " + seed, 10, 50);
+	stroke(0);
 	for(let i = 0; i < nbArms; i++){
 		arms.push(new Arm(len/2**(i+1), random(-angle, angle)));
 	}
