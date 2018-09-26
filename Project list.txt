@@ -11,12 +11,12 @@ Added:
     add vertical rotation, add zBuffer (probably needs custom triangle painting)
   Spirograph
     add control for number of arms and length of them
+  Sorting visualizer
+    add controls to choose speed and bar width
 
 To add:
   Mastermind
     Make independent from java server
-  Sorting visualizer
-    add controls to chose sorting algorithm, speed and bar width
   ? Watt's Curve
     add controls
   ? Brownian motion
