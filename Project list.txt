@@ -1,18 +1,20 @@
 Added:
   Color-pool
-    
+    OK
   Heart renderer
-    
+    OK
   brick breaker
-    add score, lives, menu, bonuses, sounds
+    add score, lives, menu, bonuses
   pong
-    same as brick breaker
+    OK
   teapot renderer
-    add vertical rotation, add zBuffer (probably needs custom triangle painting)
+    add vertical rotation
   Spirograph
-    add control for number of arms and length of them
+    add control for number of arms and length of them, allow user to import and export settings
   Sorting visualizer
     add controls to choose speed and bar width
+  Tetris
+    add levels and menu, better UI
 
 To add:
   Mastermind
@@ -23,5 +25,3 @@ To add:
     incomplete
   Physics test: importance of numerical integration
     add controls and explanation
-  Tetris
-    Pretty much everything to do
