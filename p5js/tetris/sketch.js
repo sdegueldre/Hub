@@ -8,11 +8,23 @@ let backgroundColor = "dimgray";
 function setup(){
 	createCanvas(windowWidth, windowHeight);
 	tileGrid = new TileGrid(boardWidth, boardHeight);
-	gameState.active = new Tetromino();
-	gameState.next = new Tetromino();
 	greyBlock = loadImage("block.png");
 	gameState.paused = false;
 	gameState.score = 0;
+	gameState.sequence = [0,1,2,3,4,5,6].shuffle();
+	gameState.current = 0;
+	gameState.active;
+	gameState.next = new Tetromino(gameState.sequence[0]);
+	gameState.nextTetromino = function(){
+		gameState.active = gameState.next;
+		gameState.current++;
+		if(gameState.current == 7){
+			gameState.sequence.shuffle();
+			gameState.current = 0;
+		}
+		gameState.next = new Tetromino(gameState.sequence[gameState.current]);
+	}
+	gameState.nextTetromino();
 }
 
 function draw(){
@@ -151,10 +163,9 @@ function windowResized(){
 }
 
 class Tetromino {
-	constructor(){
+	constructor(selector){
 		this.x = 5;
 		this.y = 0;
-		let selector = Math.floor(random(7));
 		this.shape = Tetromino.shapes[selector];
 		this.color = Tetromino.colors[selector];
 		this.blocks = Tetromino.tiles[selector];
@@ -243,10 +254,9 @@ function update(){
 		if(!gameState.active.canDrop){
 			gameState.active.anchor();
 			tileGrid.removeFullLines();
-			gameState.active = gameState.next;
+			gameState.nextTetromino();
 			if(tileGrid.collide(gameState.active.levelSpace(gameState.active.blocks)))
 				gameOver();
-			gameState.next	= new Tetromino();
 		} else {
 			gameState.active.y++;
 		}
@@ -286,3 +296,12 @@ function keyReleased(){
 	}
 }
 
+Array.prototype.shuffle = function(){
+	for(let i = this.length-1; i > 0; i--){
+		const j = Math.floor(Math.random() * (i + 1));
+    let temp = this[i];
+    this[i] = this[j];
+    this[j] = temp;
+  }
+  return this;
+}
