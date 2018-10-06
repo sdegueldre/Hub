@@ -24,9 +24,22 @@ function setup(){
   backCanvas.style.zIndex = -1;
 
   tileSize = Math.floor(windowHeight*0.95/boardHeight);
-  frontCanvas.context.translate(windowWidth/2 - boardWidth*tileSize/2, windowHeight/2 - boardHeight*tileSize/2);
-  backCanvas.context.translate(windowWidth/2 - boardWidth*tileSize/2, windowHeight/2 - boardHeight*tileSize/2);
+  let horizontal = Math.floor(windowWidth/2 - boardWidth*tileSize/2);
+  let vertical = Math.floor(windowHeight/2 - boardHeight*tileSize/2);
+  frontCanvas.context.translate(horizontal, vertical);
+  backCanvas.context.translate(horizontal, vertical);
   initGameState();
+}
+
+function windowResized(){
+  frontCanvas.width = backCanvas.width = windowWidth;
+  frontCanvas.height = backCanvas.height = windowHeight;
+  tileSize = Math.floor(windowHeight*0.95/boardHeight);
+  let horizontal = Math.floor(windowWidth/2 - boardWidth*tileSize/2);
+  let vertical = Math.floor(windowHeight/2 - boardHeight*tileSize/2);
+  frontCanvas.context.translate(horizontal, vertical);
+  backCanvas.context.translate(horizontal, vertical);
+  draw("backCanvas");
 }
 
 function initGameState(){
@@ -57,7 +70,7 @@ function draw(repaint){
     	backCanvas.clear()
     	backCanvas.context.fillStyle ='red';
     	backCanvas.context.fillRect(0, 0, boardWidth*tileSize, boardHeight*tileSize);
-    	tileGrid.display(0, 0, tileSize);
+    	tileGrid.display(tileSize);
       gameState.next.display(8,2,tileSize, backCanvas);
       backCanvas.context.font = `${tileSize}px monospace`;
       backCanvas.context.fillStyle = 'black';
@@ -85,11 +98,6 @@ function drawMenu(scale){
 	textSize(scale*2);
 	text("Paused",0,0);
 }
-
-function windowResized(){
-	resizeCanvas(windowWidth, windowHeight);
-}
-
 
 let lastUpdate = 0;
 let tickSpeed = 60;

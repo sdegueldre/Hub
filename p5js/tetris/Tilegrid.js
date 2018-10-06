@@ -11,10 +11,10 @@ class TileGrid {
     }
   }
 
-  display(x, y, tileSize){
+  display(tileSize){
     for(let i = 0; i < this.width; i++)
       for(let j = 0; j < this.height; j++){
-        backCanvas.context.drawImage(this.tile[i][j], (i+x)*tileSize, (j+x)*tileSize, tileSize, tileSize);
+        backCanvas.context.drawImage(this.tile[i][j], i*tileSize, j*tileSize, tileSize, tileSize);
       }
   }
 

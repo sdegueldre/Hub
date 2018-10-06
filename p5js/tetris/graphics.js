@@ -9,6 +9,7 @@ window.onload = function(){
   windowWidth = window.innerWidth;
   window.addEventListener('keydown', keyPressHandler);
   window.addEventListener('keyup', keyReleaseHandler);
+  window.addEventListener('resize', resizeHandler);
   if(typeof preload == "function"){
     preload();
     if(itemsToLoad != 0)
@@ -65,4 +66,11 @@ function keyPressHandler(event){
 function keyReleaseHandler(event){
   if(typeof keyReleased == "function")
     keyReleased(event);
+}
+
+function resizeHandler(event){
+  windowHeight = window.innerHeight;
+  windowWidth = window.innerWidth;
+  if(typeof windowResized == "function")
+    windowResized(event);
 }
