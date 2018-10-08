@@ -39,7 +39,10 @@ function createCanvas(width, height){
   canvas.context = canvas.getContext('2d');
   canvas.style.position = "absolute";
   canvas.clear = function(){
+    this.context.save();
+    this.context.resetTransform();
     this.context.clearRect(0, 0, this.width, this.height);
+    this.context.restore();
   }
   document.body.appendChild(canvas);
   return canvas;

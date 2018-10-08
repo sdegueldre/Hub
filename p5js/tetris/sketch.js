@@ -39,6 +39,7 @@ function windowResized(){
   let vertical = Math.floor(windowHeight/2 - boardHeight*tileSize/2);
   frontCanvas.context.translate(horizontal, vertical);
   backCanvas.context.translate(horizontal, vertical);
+  gameState.menuOverlay = false;
   draw("backCanvas");
 }
 
@@ -60,10 +61,11 @@ function initGameState(){
     gameState.next = new Tetromino(gameState.sequence[gameState.current]);
   }
   gameState.nextTetromino();
+  gameState.menuOverlay = false;
 }
 
 function draw(repaint){
-	if(!gameState.paused){
+	if(!gameState.paused || repaint == "backCanvas"){
     let toRedraw = (typeof repaint == "undefined") ? update() : repaint;
 
     if(toRedraw == "backCanvas"){
@@ -82,21 +84,28 @@ function draw(repaint){
     	gameState.active.display(0,0,tileSize, frontCanvas);
     }
     	
-  } else {
+  }
+  if(gameState.paused && gameState.menuOverlay == false){
 		drawMenu(tileSize);
   }
 }
 
 function drawMenu(scale){
-	background(0,50);
-	fill(255);
-	stroke(0)
-	strokeWeight(scale*0.1);
-	//rect(0,0,500,500);
-	translate(Math.floor(width/2),Math.floor(scale*2));
-	textAlign(CENTER);
-	textSize(scale*2);
-	text("Paused",0,0);
+  frontCanvas.context.save();
+  frontCanvas.context.resetTransform();
+  frontCanvas.context.fillStyle = 'rgba(50,50,50,0.5)';
+	frontCanvas.context.fillRect(0,0,windowWidth,windowHeight);
+	
+  frontCanvas.context.strokeStyle = `black`;
+  frontCanvas.context.lineWidth = 0.1*scale;
+	frontCanvas.context.font = `${scale*2}px sans-serif`;
+  frontCanvas.context.textAlign = 'center';
+  frontCanvas.context.fillStyle = 'white';
+	frontCanvas.context.strokeText("Paused", windowWidth/2, 2*scale);
+  frontCanvas.context.fillText("Paused", windowWidth/2, 2*scale);
+
+  frontCanvas.context.restore();
+  gameState.menuOverlay = true;
 }
 
 let lastUpdate = 0;
@@ -144,6 +153,7 @@ function keyPressed(event){
 		break;
 	case "Escape":
 		gameState.paused ^= true;
+    gameState.menuOverlay = false;
 		break;
 	}
   draw("frontCanvas");
