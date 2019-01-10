@@ -67,11 +67,13 @@ function draw(repaint){
 
     if(toRedraw == "backCanvas"){
     	backCanvas.clear()
-    	backCanvas.context.fillStyle ='red';
-    	backCanvas.context.fillRect(0, 0, boardWidth*tileSize, boardHeight*tileSize);
+    	backCanvas.context.fillStyle ='#ff8a00';
+			let border = Math.ceil(tileSize*0.05)
+    	backCanvas.context.fillRect(-border, -border,
+																	boardWidth*tileSize + 2*border,
+																	boardHeight*tileSize + 2*border);
     	tileGrid.display(tileSize);
       backCanvas.context.font = `${tileSize}px monospace`;
-      backCanvas.context.fillStyle = '#ff8a00';
       backCanvas.context.fillText("Score: " + gameState.score, tileSize*(boardWidth+0.5), tileSize);
 			backCanvas.context.fillText("Level " + gameState.level, tileSize*(boardWidth+0.5), tileSize*2.5);
 			backCanvas.context.fillText("Up next: ", tileSize*-5, tileSize);
