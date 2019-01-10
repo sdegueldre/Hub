@@ -1,15 +1,12 @@
 html, body {
   height: 100%;
+  background-color: #0C101A;
 }
 
 body {
   margin: auto;
   padding: 0;
   display: flex;
-
-  /* This centers our sketch horizontally. */
-  justify-content: center;
-
-  /* This centers our sketch vertically. */
+  flex-direction: column;
   align-items: center;
 }

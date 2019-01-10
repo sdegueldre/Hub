@@ -18,23 +18,18 @@ function preload(){
 }
 
 function setup(){
-	frontCanvas = createCanvas(windowWidth, windowHeight);
-  backCanvas = createCanvas(windowWidth, windowHeight);
-  frontCanvas.style.zIndex = 0;
-  backCanvas.style.zIndex = -1;
-
-  tileSize = Math.floor(windowHeight*0.95/boardHeight);
-  let horizontal = Math.floor(windowWidth/2 - boardWidth*tileSize/2);
-  let vertical = Math.floor(windowHeight/2 - boardHeight*tileSize/2);
-  frontCanvas.context.translate(horizontal, vertical);
-  backCanvas.context.translate(horizontal, vertical);
+	frontCanvas = createCanvas();
+  backCanvas = createCanvas();
+  frontCanvas.style.zIndex = 1;
+  backCanvas.style.zIndex = 0;
   initGameState();
+	windowResized();
 }
 
 function windowResized(){
   frontCanvas.width = backCanvas.width = windowWidth;
   frontCanvas.height = backCanvas.height = windowHeight;
-  tileSize = Math.floor(windowHeight*0.95/boardHeight);
+  tileSize = Math.floor((windowHeight-29)*0.95/boardHeight);
   let horizontal = Math.floor(windowWidth/2 - boardWidth*tileSize/2);
   let vertical = Math.floor(windowHeight/2 - boardHeight*tileSize/2);
   frontCanvas.context.translate(horizontal, vertical);
@@ -62,6 +57,8 @@ function initGameState(){
   }
   gameState.nextTetromino();
   gameState.menuOverlay = false;
+	gameState.level = 0;
+	gameState.clearedLines = 0;
 }
 
 function draw(repaint){
@@ -73,17 +70,19 @@ function draw(repaint){
     	backCanvas.context.fillStyle ='red';
     	backCanvas.context.fillRect(0, 0, boardWidth*tileSize, boardHeight*tileSize);
     	tileGrid.display(tileSize);
-      gameState.next.display(8,2,tileSize, backCanvas);
       backCanvas.context.font = `${tileSize}px monospace`;
-      backCanvas.context.fillStyle = 'black';
-      backCanvas.context.fillText("Score: " + gameState.score, tileSize*boardWidth, tileSize);
+      backCanvas.context.fillStyle = '#ff8a00';
+      backCanvas.context.fillText("Score: " + gameState.score, tileSize*(boardWidth+0.5), tileSize);
+			backCanvas.context.fillText("Level " + gameState.level, tileSize*(boardWidth+0.5), tileSize*2.5);
+			backCanvas.context.fillText("Up next: ", tileSize*-5, tileSize);
+			gameState.next.display(-8,1.5,tileSize, backCanvas);
       toRedraw = "frontCanvas";
     }
     if(toRedraw == "frontCanvas"){
       frontCanvas.clear();
     	gameState.active.display(0,0,tileSize, frontCanvas);
     }
-    	
+
   }
   if(gameState.paused && gameState.menuOverlay == false){
 		drawMenu(tileSize);
@@ -95,7 +94,7 @@ function drawMenu(scale){
   frontCanvas.context.resetTransform();
   frontCanvas.context.fillStyle = 'rgba(50,50,50,0.5)';
 	frontCanvas.context.fillRect(0,0,windowWidth,windowHeight);
-	
+
   frontCanvas.context.strokeStyle = `black`;
   frontCanvas.context.lineWidth = 0.1*scale;
 	frontCanvas.context.font = `${scale*2}px sans-serif`;
