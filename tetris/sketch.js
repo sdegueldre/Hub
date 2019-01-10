@@ -27,11 +27,13 @@ function setup(){
 }
 
 function windowResized(){
-  frontCanvas.width = backCanvas.width = windowWidth;
-  frontCanvas.height = backCanvas.height = windowHeight;
-  tileSize = Math.floor((windowHeight-29)*0.95/boardHeight);
-  let horizontal = Math.floor(windowWidth/2 - boardWidth*tileSize/2);
-  let vertical = Math.floor(windowHeight/2 - boardHeight*tileSize/2);
+	let cvWidth = windowWidth;
+	let cvHeight = windowHeight-32;
+  frontCanvas.width = backCanvas.width = cvWidth;
+  frontCanvas.height = backCanvas.height = cvHeight;
+  tileSize = Math.floor(cvHeight*0.98/boardHeight);
+  let horizontal = Math.floor(cvWidth/2 - boardWidth*tileSize/2);
+  let vertical = Math.floor(cvHeight/2 - boardHeight*tileSize/2);
   frontCanvas.context.translate(horizontal, vertical);
   backCanvas.context.translate(horizontal, vertical);
   gameState.menuOverlay = false;

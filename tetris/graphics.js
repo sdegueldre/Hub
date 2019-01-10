@@ -44,7 +44,7 @@ function createCanvas(width, height){
     this.context.clearRect(0, 0, this.width, this.height);
     this.context.restore();
   }
-  document.body.appendChild(canvas);
+  document.getElementById('gameContainer').appendChild(canvas);
   return canvas;
 }
 
