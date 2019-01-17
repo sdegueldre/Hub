@@ -2,7 +2,7 @@ var arms;
 var iter = 300;
 var nbArms = 3;
 var angle = 0.5;
-var len = 500;
+var len;
 var nextCol;
 var paused = false;
 var seed;
@@ -10,6 +10,7 @@ var seed;
 function setup() {
 	arms = [];
 	createCanvas(windowWidth, windowHeight);
+  len = windowHeight/2;
 	background(255);
 	angleMode(DEGREES);
 	//fill(255,25)
