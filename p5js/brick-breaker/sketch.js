@@ -5,6 +5,10 @@ var brickHeight = brickWidth/3;
 var brickSpacing = brickHeight*0.666;
 var Bricks = [xBricks];
 var ps = []; //particle system
+let lives;
+let score;
+let combo;
+let gameover;
 
 function setup() {
 	createCanvas(1280,720);
@@ -17,11 +21,17 @@ function setup() {
 			Bricks[i][j] = new Brick(width/2 + (i-(xBricks-1)/2)*(brickWidth+brickSpacing), brickSpacing + brickHeight/2 + (j*(brickHeight+brickSpacing)), brickWidth, brickHeight);
 		}
 	}
+  lives = 1;
+  score = 0;
+  combo = 0;
+  gameover = false;
 }
 
 function draw() {
-	paddle.tick();
-	ball.tick();
+  if(!gameover){
+    paddle.tick();
+  	ball.tick();
+  }
 	background(0);
 
 	for(let i = 0; i < xBricks; i++)
@@ -38,6 +48,52 @@ function draw() {
 		if(ps[i].life <= 0)
 			ps.splice(i, 1);
 	}
+
+  drawLives();
+  drawScore();
+  if(gameover){
+    fill(127, 127);
+    rect(0,0,width, height);
+    drawGameOver();
+  }
+}
+
+function drawGameOver(){
+  push();
+  fill(0);
+	stroke(255);
+	strokeWeight(4);
+	textSize(100);
+	textAlign(CENTER, BASELINE);
+	text('GAME OVER', width/2, height/2 - 20);
+  textSize(50);
+	textAlign(CENTER, TOP);
+	text('press space to play again', width/2, height/2 + 20);
+	textAlign(CENTER, TOP);
+	text('Final score: '+score, width/2, 3*height/4);
+	pop();
+}
+
+function drawLives(){
+  push();
+  fill(0);
+	stroke(255);
+	strokeWeight(4);
+	textSize(50);
+	textAlign(RIGHT, BASELINE);
+	text(lives, width-3.5, height-7);
+	pop();
+}
+
+function drawScore(){
+  push();
+  fill(0);
+	stroke(255);
+	strokeWeight(4);
+	textSize(50);
+	textAlign(LEFT, BASELINE);
+	text(score, 3.5, height-7);
+	pop();
 }
 
 function Paddle(w,h) {
@@ -65,22 +121,25 @@ function Paddle(w,h) {
 function Ball(size) {
 	this.size = size;
 	this.x = paddle.x;
-	this.y = paddle.y - this.size*1.25;
+	this.y = paddle.y - this.size - 5;
 	this.speed = 10;
 	this.angle = -HALF_PI;
 	this.isDocked = true;
 
 	this.draw = function() {
+    let sz = size + 5;
 		noStroke();
 		fill(255);
-		rect(this.x-this.size/2, this.y-this.size/2, this.size, this.size);
+    ellipseMode(CORNER);
+		ellipse(this.x-sz/2, this.y-sz/2, sz, sz);
 	}
 
 	this.collide = function(paddle){
-		if(this.x + this.size/2 >= paddle.x - paddle.width/2 && this.x - this.size/2 <= paddle.x + paddle.width/2){
-			if(this.y + this.size/2 >= paddle.y - paddle.height/2 && this.y - this.size/2 <= paddle.y + paddle.height/2){
-				return true;
-			}
+		if((this.x + this.size/2) >= (paddle.x - paddle.width/2) &&
+       (this.x - this.size/2) <= (paddle.x + paddle.width/2) &&
+       (this.y + this.size/2) >= (paddle.y - paddle.height/2) &&
+       (this.y - this.size/2) <= (paddle.y + paddle.height/2)){
+			return true;
 		}
 		return false;
 	}
@@ -95,8 +154,10 @@ function Ball(size) {
 				this.angle = -this.angle + PI;
 			if(this.y <= this.size/2)
 				this.angle = -this.angle;
-			if(this.collide(paddle))
-				this.angle = ((this.x - paddle.x)/paddle.width-1)*HALF_PI;
+			if(this.collide(paddle)){
+        this.angle = ((this.x - paddle.x)/paddle.width-1)*HALF_PI;
+        combo = 0;
+      }
 
 			for(let i = 0; i < xBricks; i++)
 				for(let j = 0; j < yBricks; j++)
@@ -109,13 +170,22 @@ function Ball(size) {
 						}
 						this.angle = -this.angle;
 						Bricks[i][j] = null;
+            combo++;
+            score += combo;
 					}
 
 			if(this.y >= height - this.size/2){
+        lives--;
+        if(lives <= 0){
+          gameover = true;
+        }
 				this.isDocked = true;
-				this.angle = -HALF_PI;
-				this.x = paddle.x;
-				this.y = paddle.y - this.size - 1;
+        if(!gameover){
+          this.angle = -HALF_PI;
+          this.x = paddle.x;
+  				this.y = paddle.y - this.size - 1;
+        }
+        combo = 0;
 			}
 		}
 	}
@@ -124,8 +194,8 @@ function Ball(size) {
 function keyPressed() {
 	if(keyCode == 32 && ball.isDocked)
 		ball.isDocked = false;
-	if(keyCode == ESCAPE)
-		setup();
+	if(keyCode == ESCAPE || (keyCode == 32 && gameover))
+    setup();
 }
 
 function Brick(x,y,w,h) {
@@ -160,7 +230,7 @@ function Particle(x,y,xv,yv) {
 
 	this.draw = function(){
 		ellipseMode(CENTER);
-		fill(255,255,255, this.life*2);
+		fill(255,255,255, this.life/50*255);
 		ellipse(this.x, this.y, this.r*2, this.r*2);
 	}
 }
