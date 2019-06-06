@@ -12,7 +12,7 @@ let tileSize;
 
 function preload(){
 	spriteArray.background = loadImage("assets/bg.png");
-	for(shape of Tetromino.shapes){
+	for(let shape of Tetromino.shapes){
 		spriteArray[shape] = loadImage(`assets/${shape}.png`);
 	}
 }

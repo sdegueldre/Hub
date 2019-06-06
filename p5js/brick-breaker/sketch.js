@@ -212,10 +212,7 @@ function Brick(x,y,w,h) {
 }
 
 function Particle(x,y,xv,yv) {
-	this.x = x;
-	this.xv = xv;
-	this.y = y;
-	this.yv = yv;
+	({this} = {x: x, xv: xv, y: y, yv: yv});
 	this.gravity = 0.5;
 	this.r = 3;
 	this.life = 50;
