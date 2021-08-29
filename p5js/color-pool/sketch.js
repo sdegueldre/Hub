@@ -22,6 +22,7 @@ function draw() {
 	if(random(0,100) <= spawnRate){
 		splashes.push(new Splash(random(0,width), random(0,height)));
 	}
+	Math.random() > .5 && splashes.push(new Splash(width / 2, height / 2));
 	noStroke();
 	fill(255);
 	blendMode(BLEND);
@@ -51,14 +52,14 @@ function keyPressed(){
 
 var lifeTime = 150;
 var maxAge = 0;
-var thickness = 1.5;
+var thickness = 25;
 
 function Splash(x,y){
 	this.x = x;
 	this.y = y;
 	this.age = 0;
 	this.size = 0;
-	this.radiusChange = random(1,5);
+	this.radiusChange = random(1,15);
 	this.hue = random(360);
 	this.alpha = 100;
 }
@@ -67,7 +68,7 @@ Splash.prototype.draw = function(){
 	push();
 	colorMode(HSB, 360, 100, 100, 100);
 	noFill();
-	strokeWeight(thickness)
+	strokeWeight(thickness * random(.8, 1.2))
 	stroke(this.hue, 100, 50, this.alpha);
 	ellipse(this.x, this.y, this.size, this.size);
 	pop();
